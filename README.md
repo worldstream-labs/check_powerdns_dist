@@ -19,7 +19,7 @@ warning/critical
 
 ## Usage
 
-For example: check the statistics using the API running on 127.0.0.1:8082 using key "myapikey".
+For example: check the statistics using the API running on 127.0.0.1:8083 using key "myapikey".
 ```sh
 ./check_powerdns_dist.py -A 127.0.0.1 -P 8083 -k myapikey -p
 ```
