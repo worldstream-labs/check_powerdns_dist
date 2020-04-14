@@ -39,7 +39,7 @@ querylist = ['queries']
 
 avglist = querylist + ['responses', 'cache-hits', 'cache-misses', 'latency-slow', 'latency0-1', 'latency1-10',
                        'latency10-50', 'latency50-100', 'latency100-1000', 'frontend-nxdomain', 'frontend-servfail',
-                       'frontend-noerror', 'acl-drops', 'rule-drop', 'downstream-timeouts', 'downstream-send-errors'] 
+                       'frontend-noerror', 'acl-drops', 'rule-drop', 'downstream-timeouts', 'downstream-send-errors']
 watchlist = avglist + ['latency-avg10000', 'security-status']
 
 
@@ -67,8 +67,7 @@ def parse_args():
                'the Free Software Foundation, either version 3 of the License, or '
                'at your option) any later version. Author: ' + __author__)
 
-    parser.add_argument('-A', '--api-host', help='PowerDNS API host (default 127.0.0.1)',
-                       type=str, default='127.0.0.1')
+    parser.add_argument('-A', '--api-host', help='PowerDNS API host (default 127.0.0.1)', type=str, default='127.0.0.1')
     parser.add_argument('-T', '--test', help='Test case; Use fake data', action='store_true')
     parser.add_argument('-P', '--api-port', help='PowerDNS API port (default 8083)', type=int, default=8083)
     parser.add_argument('-k', '--api-key', help='PowerDNS API key', type=str, default='')
