@@ -72,8 +72,8 @@ def parse_args():
     parser.add_argument('-P', '--api-port', help='PowerDNS API port (default 8083)', type=int, default=8083)
     parser.add_argument('-k', '--api-key', help='PowerDNS API key', type=str, default='')
     parser.add_argument('-n', '--config-name', help='Name of PowerDNS virtual configuration', type=str)
-    parser.add_argument('-w', '--warning', help='Warning threshold (Queries/s)', type=int, default=0)
-    parser.add_argument('-c', '--critical', help='Critical threshold (Queries/s)', type=int, default=0)
+    parser.add_argument('-w', '--warning', help='Warning threshold (Queries/s)', type=str, default='0')
+    parser.add_argument('-c', '--critical', help='Critical threshold (Queries/s)', type=str, default='0')
     parser.add_argument('-s', '--scratch',
                         help="Scratch/temp directory. (Default %s)" % tempdir, type=str, default=tempdir)
     parser.add_argument('-p', '--perfdata', help='Print performance data, (default: off)', action='store_true')
@@ -131,7 +131,7 @@ class Monitoring(object):
         if len(self.perfdata) > 0:
             output += '|'
             for measurement in self.perfdata:
-                output += (" '%s'=%d;%d;%d;0;" % (measurement[0], measurement[1], measurement[2], measurement[3]))
+                output += (" '%s'=%d;%s;%s;0;" % (measurement[0], measurement[1], measurement[2], measurement[3]))
         print(output)
         sys.exit(self.status)
 
@@ -294,10 +294,23 @@ if __name__ == '__main__':
                 security = "PowerDNS unexpected security-status %d." % data_new['security-status']
         else:
             security = ''
-        if args.warning and (queries >= args.warning):
-            monitor.set_status(MStatus().WARNING)
-        if args.critical and (queries >= args.critical):
-            monitor.set_status(MStatus().CRITICAL)
+
+        # support for 'less than' thresholds expressed by trailing ':'
+        if args.warning:
+            warning = int(args.warning.split(':')[0])
+            if args.warning.endswith(":"):
+                if (queries < warning):
+                    monitor.set_status(MStatus().WARNING)
+            elif (queries >= warning):
+                monitor.set_status(MStatus().WARNING)
+
+        if args.critical:
+            critical = int(args.critical.split(':')[0])
+            if args.critical.endswith(":"):
+                if (queries < critical):
+                    monitor.set_status(MStatus().CRITICAL)
+            elif (queries >= critical):
+                monitor.set_status(MStatus().CRITICAL)
 
         monitor.set_status(MStatus().OK)
         monitor.set_message("%s Queries: %d/s." % (security, queries))
